@@ -1,0 +1,107 @@
+<!-- event-details.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Details</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .event-box {
+      border: 1px solid #ccc;
+      background: #eef8ff;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 10px;
+      position: relative;
+    }
+    .icon-btn {
+      position: absolute;
+      top: 8px;
+      width: 22px;
+      height: 22px;
+      font-size: 12px;
+      padding: 0;
+      line-height: 20px;
+      text-align: center;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .edit-btn {
+      right: 35px;
+      background: #ffa500;
+      border: none;
+    }
+    .delete-btn {
+      right: 8px;
+      background: #e63946;
+      border: none;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">📋 Event Details</h2>
+  <div id="eventDetails"></div>
+  <script>
+    let events = JSON.parse(localStorage.getItem("events")) || [];
+    const eventDiv = document.getElementById("eventDetails");
+
+    function renderEvents() {
+      eventDiv.innerHTML = "";
+      events.forEach((ev, i) => {
+        const box = document.createElement("div");
+        box.className = "event-box";
+        box.innerHTML = `
+          <button class='icon-btn edit-btn' onclick='editEvent(${i})'>✎</button>
+          <button class='icon-btn delete-btn' onclick='deleteEvent(${i})'>✖</button>
+          <strong>${ev.title}</strong><br>
+          Date: ${ev.date}<br>
+          Start: ${new Date(ev.start).toLocaleTimeString()}<br>
+          End: ${new Date(ev.end).toLocaleTimeString()}<br>
+          Repeat: ${ev.repeat}<br>
+          Reminder: ${ev.remindBefore} mins before, ${ev.remindDays} day(s)<br>
+        `;
+        eventDiv.appendChild(box);
+      });
+    }
+
+    function editEvent(index) {
+      const ev = events[index];
+      const updatedTitle = prompt("Edit title", ev.title);
+      const updatedDate = prompt("Edit date", ev.date);
+      const updatedStartTime = prompt("Edit start time (HH:MM)", new Date(ev.start).toISOString().substring(11, 16));
+      const updatedDuration = prompt("Edit duration (minutes)", (new Date(ev.end) - new Date(ev.start)) / 60000);
+      const updatedRepeat = prompt("Edit repeat", ev.repeat);
+      const updatedRemindBefore = prompt("Edit reminder before (mins)", ev.remindBefore);
+      const updatedRemindDays = prompt("Edit reminder days", ev.remindDays);
+
+      const start = new Date(`${updatedDate}T${updatedStartTime}`);
+      const end = new Date(start.getTime() + parseInt(updatedDuration) * 60000);
+
+      events[index] = {
+        ...ev,
+        title: updatedTitle,
+        date: updatedDate,
+        start: start.toISOString(),
+        end: end.toISOString(),
+        repeat: updatedRepeat,
+        remindBefore: parseInt(updatedRemindBefore),
+        remindDays: parseInt(updatedRemindDays)
+      };
+      localStorage.setItem("events", JSON.stringify(events));
+      renderEvents();
+    }
+
+    function deleteEvent(index) {
+      if (confirm("Are you sure you want to delete this event?")) {
+        events.splice(index, 1);
+        localStorage.setItem("events", JSON.stringify(events));
+        renderEvents();
+      }
+    }
+
+    renderEvents();
+  </script>
+</body>
+</html>

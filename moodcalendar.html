@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Vault</title>
+  <link rel="stylesheet" href="passwords.css" />
+</head>
+<body>
+  <h1>🔐 Password Vault</h1>
+
+  <div id="lockScreen">
+    <input type="password" id="masterPassInput" placeholder="Enter Master Password">
+    <button onclick="unlockVault()">Unlock</button>
+  </div>
+
+  <div id="vault" style="display:none;">
+    <div class="vault-form">
+      <input type="text" id="site" placeholder="Website">
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="addPassword()">Add</button>
+    </div>
+    <div class="vault-list" id="vaultList"></div>
+  </div>
+
+  <script src="passwords.js"></script>
+</body>
+</html>

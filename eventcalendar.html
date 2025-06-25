@@ -1,0 +1,49 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Calendar & Timetable</title>
+  <link rel="stylesheet" href="eventcalendar.css">
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <h2>Add New Event</h2>
+      <input type="text" id="eventTitle" placeholder="Event Title">
+      <input type="date" id="eventDate">
+      <input type="time" id="eventStartTime">
+      <input type="number" id="eventDuration" placeholder="Duration (minutes)">
+      <select id="eventRepeat">
+        <option value="None">No Repeat</option>
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+      </select>
+      <input type="number" id="eventReminder" placeholder="Reminder Before (mins)">
+      <input type="number" id="eventReminderDays" placeholder="Reminder Days Span">
+      <button onclick="submitEvent()">Add Event</button>
+      <button onclick="location.href='eventDetails.html'">View Event Details</button>
+    </div>
+
+    <div class="right-panel">
+      <h2>Add Weekly Timetable</h2>
+      <input type="text" id="ttTitle" placeholder="Activity Title">
+      <input type="time" id="ttStartTime">
+      <input type="time" id="ttEndTime">
+      <input type="number" id="ttReminder" placeholder="Reminder Before (mins)">
+      <div class="day-checkboxes">
+        <label><input type="checkbox" name="ttDays" value="Monday"> Mon</label>
+        <label><input type="checkbox" name="ttDays" value="Tuesday"> Tue</label>
+        <label><input type="checkbox" name="ttDays" value="Wednesday"> Wed</label>
+        <label><input type="checkbox" name="ttDays" value="Thursday"> Thu</label>
+        <label><input type="checkbox" name="ttDays" value="Friday"> Fri</label>
+        <label><input type="checkbox" name="ttDays" value="Saturday"> Sat</label>
+        <label><input type="checkbox" name="ttDays" value="Sunday"> Sun</label>
+      </div>
+      <button onclick="submitTimetable()">Add Timetable Entry</button>
+      <button onclick="location.href='weekly-timetable.html'">View Timetable</button>
+    </div>
+  <script src="eventcalendar.js"></script>
+</body>
+</html>

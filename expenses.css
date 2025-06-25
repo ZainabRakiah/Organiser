@@ -1,0 +1,100 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+  background-color: #f2f7f9;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+h2 {
+  margin-top: 30px;
+  font-size: 1.4rem;
+  color: #005f73;
+}
+
+input[type="text"],
+input[type="number"] {
+  padding: 8px;
+  margin: 5px 0;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 10px 14px;
+  margin-top: 10px;
+  background-color: #008891;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #006f7a;
+}
+
+#expenseList {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  margin-top: 10px;
+}
+
+#expenseList div {
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+#balance {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 10px;
+  color: #007f5f;
+}
+
+hr {
+  margin: 30px 0;
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+}
+#expenseList button {
+  margin-left: 10px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  background-color: #ddd;
+  color: #333;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+#expenseList button:hover {
+  background-color: #bbb;
+}
+#expenseList button:first-of-type {
+  background-color: #ffda77; /* Edit - yellowish */
+}
+
+#expenseList button:last-of-type {
+  background-color: #ff6b6b; /* Delete - red */
+  color: white;
+}
+
+#expenseList button:first-of-type:hover {
+  background-color: #ffd54f;
+}
+
+#expenseList button:last-of-type:hover {
+  background-color: #e63946;
+}

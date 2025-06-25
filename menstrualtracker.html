@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menstrual Tracker</title>
+  <link rel="stylesheet" href="menstrualtracker.css" />
+</head>
+<body>
+  <h1>🌸 Menstrual Cycle Tracker</h1>
+
+  <div class="tracker-form">
+    <label>Start Date: <input type="date" id="startDate"></label>
+    <label>End Date: <input type="date" id="endDate"></label>
+    <label>Cycle Length (days): <input type="number" id="cycleLength" min="20" max="40" value="28"></label>
+    <button onclick="saveCycle()">Save</button>
+  </div>
+
+  <div id="nextCycleInfo"></div>
+  <h2 style="text-align:center;">📅 Your Cycle Calendar</h2>
+  <div class="calendar-header">
+    <button onclick="changeMonth(-1)">⬅️</button>
+    <span id="monthLabel"></span>
+    <button onclick="changeMonth(1)">➡️</button>
+  </div>
+  <div id="calendarContainer"></div>
+  <h2 style="text-align:center;">📜 Period History</h2>
+  <div id="historyContainer" class="history-section"></div>
+  <script src="menstrualtracker.js"></script>
+</body>
+</html>
