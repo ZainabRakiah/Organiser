@@ -3,27 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Password Vault</title>
-  <link rel="stylesheet" href="passwords.css" />
+  <title>📆 Mood Calendar</title>
+  <link rel="stylesheet" href="moodcalendar.css" />
 </head>
 <body>
-  <h1>🔐 Password Vault</h1>
+  <h1>📆 Mood Calendar</h1>
 
-  <div id="lockScreen">
-    <input type="password" id="masterPassInput" placeholder="Enter Master Password">
-    <button onclick="unlockVault()">Unlock</button>
+  <div class="input-section">
+    <input type="date" id="date" />
+    <input type="number" id="mood" min="1" max="10" placeholder="Mood 1-10" />
+    <input type="text" id="note" placeholder="Optional Note" />
+    <button onclick="markMood()">Mark Mood</button>
   </div>
 
-  <div id="vault" style="display:none;">
-    <div class="vault-form">
-      <input type="text" id="site" placeholder="Website">
-      <input type="text" id="username" placeholder="Username">
-      <input type="password" id="password" placeholder="Password">
-      <button onclick="addPassword()">Add</button>
+  <div class="calendar-nav">
+    <button onclick="prevMonth()">← Prev</button>
+    <span id="monthLabel"></span>
+    <button onclick="nextMonth()">Next →</button>
+  </div>
+
+  <div class="legend">
+    <div class="legend-row">
+      <div><span class="mood-box mood-1"></span> 1 - Depressed</div>
+      <div><span class="mood-box mood-2"></span> 2 - Extremely Upset</div>
+      <div><span class="mood-box mood-3"></span> 3 - Very Sad</div>
+      <div><span class="mood-box mood-4"></span> 4 - Sad</div>
+      <div><span class="mood-box mood-5"></span> 5 - Fine</div>
+      <div><span class="mood-box mood-6"></span> 6 - Happy</div>
     </div>
-    <div class="vault-list" id="vaultList"></div>
+    <div class="legend-row">
+      <div><span class="mood-box mood-7"></span> 7 - Very Happy</div>
+      <div><span class="mood-box mood-8"></span> 8 - Extremely Happy</div>
+      <div><span class="mood-box mood-9"></span> 9 - Over the Moon</div>
+      <div><span class="mood-box mood-10"></span> 10 - Best Day</div>
+    </div>
   </div>
 
-  <script src="passwords.js"></script>
+  <div id="calendar" class="calendar"></div>
+
+  <div class="nav" id="nav-bar">
+    <a href="#" onclick="showHistory()">📜 View History</a>
+  </div>
+
+
+  <div id="history-view" class="hidden"></div>
+
+  <script src="moodcalendar.js"></script>
 </body>
 </html>
