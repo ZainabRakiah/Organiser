@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Expense</title>
+  <link rel="stylesheet" href="expenses.css" />
+</head>
+<body>
+  <h1>📟 Add Expense</h1>
+
+  <section>
+    <input type="text" id="category" placeholder="Category (e.g., Food)" />
+    <input type="number" id="amount" placeholder="Amount (₹)" />
+    <button onclick="addExpense()">Add Expense</button>
+  </section>
+
+  <hr />
+
+  <section>
+    <h2>Expense History</h2>
+    <div id="expenseList"></div>
+    <button onclick="deleteAllExpenses()">Delete All Expenses</button>
+  </section>
+
+  <hr />
+  <button onclick="location.href='expenses.html'">⬅️ Back to Home</button>
+  <script src="expenses.js"></script>
+  <script>displayExpenses(); displayBalance();</script>
+</body>
+</html>

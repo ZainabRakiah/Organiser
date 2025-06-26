@@ -1,3 +1,4 @@
+/* Base styling */
 body {
   font-family: Arial, sans-serif;
   padding: 20px;
@@ -18,8 +19,10 @@ h2 {
   color: #005f73;
 }
 
+/* Inputs and Buttons */
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="date"] {
   padding: 8px;
   margin: 5px 0;
   width: 100%;
@@ -42,7 +45,10 @@ button:hover {
   background-color: #006f7a;
 }
 
-#expenseList {
+/* Expense List */
+#expenseList,
+#goalInfo,
+#goalMessages {
   background-color: #fff;
   padding: 10px;
   border-radius: 6px;
@@ -50,7 +56,8 @@ button:hover {
   margin-top: 10px;
 }
 
-#expenseList div {
+#expenseList div,
+#goalInfo div {
   padding: 5px 0;
   border-bottom: 1px solid #ddd;
 }
@@ -62,13 +69,15 @@ button:hover {
   color: #007f5f;
 }
 
-hr {
-  margin: 30px 0;
-  border: none;
-  height: 1px;
-  background-color: #ccc;
+#bonusNote {
+  color: #999;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
 }
-#expenseList button {
+
+/* Expense/Goal Buttons */
+#expenseList button,
+#goalInfo button {
   margin-left: 10px;
   padding: 4px 8px;
   font-size: 0.85rem;
@@ -79,22 +88,43 @@ hr {
   cursor: pointer;
 }
 
-#expenseList button:hover {
-  background-color: #bbb;
-}
-#expenseList button:first-of-type {
+#expenseList button:first-of-type,
+#goalInfo button:first-of-type {
   background-color: #ffda77; /* Edit - yellowish */
 }
 
-#expenseList button:last-of-type {
+#expenseList button:last-of-type,
+#goalInfo button:last-of-type {
   background-color: #ff6b6b; /* Delete - red */
   color: white;
 }
 
-#expenseList button:first-of-type:hover {
+#expenseList button:first-of-type:hover,
+#goalInfo button:first-of-type:hover {
   background-color: #ffd54f;
 }
 
-#expenseList button:last-of-type:hover {
+#expenseList button:last-of-type:hover,
+#goalInfo button:last-of-type:hover {
   background-color: #e63946;
+}
+
+/* Sections & Dividers */
+section {
+  margin-bottom: 30px;
+}
+
+hr {
+  margin: 30px 0;
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+}
+
+/* Responsive Buttons on Homepage */
+section button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  font-size: 1rem;
 }

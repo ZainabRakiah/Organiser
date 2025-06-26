@@ -1,0 +1,28 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Set Salary & Bonus</title>
+  <link rel="stylesheet" href="expenses.css" />
+</head>
+<body>
+  <h1>💼 Set Salary & Bonus</h1>
+
+  <section>
+    <label>Salary: ₹ <input type="number" id="salaryInput" /></label>
+    <button onclick="setSalary()">Save Salary</button>
+    <button onclick="deleteSalary()">Delete Salary</button>
+    <br /><br />
+
+    <label>Bonus: ₹ <input type="number" id="bonusInput" /></label>
+    <label><input type="checkbox" id="includeBonus" /> Include in total</label>
+    <button onclick="setBonus()">Save Bonus</button><br />
+    <button onclick="deleteIncludedBonus()">Delete Included Bonus</button>
+    <button onclick="deleteExcludedBonus()">Delete Excluded Bonus</button>
+  </section>
+
+  <hr />
+  <button onclick="location.href='expenses.html'">⬅️ Back to Home</button>
+  <script src="expenses.js"></script>
+</body>
+</html>

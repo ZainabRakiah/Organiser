@@ -2,53 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Expense Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker - Home</title>
   <link rel="stylesheet" href="expenses.css" />
 </head>
 <body>
-  <h1>💰 Expense Tracker</h1>
+  <h1>💰 Expense Tracker - Overview</h1>
 
   <section>
-    <h2>Set Salary & Bonus</h2>
-    <label>Salary: ₹ <input type="number" id="salaryInput" /></label>
-    <button onclick="setSalary()">Save Salary</button><br><br>
-
-    <label>Bonus: ₹ <input type="number" id="bonusInput" /></label>
-    <label><input type="checkbox" id="includeBonus" /> Include in total</label>
-    <button onclick="setBonus()">Save Bonus</button>
+    <button onclick="location.href='salary.html'">Set Salary & Bonus</button>
+    <button onclick="location.href='expense.html'">Add Expense</button>
+    <button onclick="location.href='goal.html'">Add Saving Goal</button>
   </section>
 
-  <hr>
-
-  <section>
-    <h2>Add Expense</h2>
-    <input type="text" id="category" placeholder="Category (e.g., Food)" />
-    <input type="number" id="amount" placeholder="Amount (₹)" />
-    <button onclick="addExpense()">Add Expense</button>
-  </section>
-
-  <hr>
-
-  <section>
-    <h2>Saving Goal</h2>
-    <input type="text" id="goalItem" placeholder="Item (e.g., Phone)" />
-    <input type="number" id="goalAmount" placeholder="Target Amount (₹)" />
-    <input type="number" id="goalDuration" placeholder="Duration (days)" />
-    <label>Start Date: <input type="date" id="goalStartDate" /></label>
-    <button onclick="saveGoal()">Save Goal</button>
-    <div id="goalInfo" style="margin-top: 10px;"></div>
-  </section>
-
-  <hr>
+  <hr />
 
   <section>
     <h2>Overview</h2>
     <p id="balance">Balance: ₹0</p>
     <p id="bonusNote"></p>
-    <div id="expenseList"></div>
+    <div id="goalInfo"></div> <!-- Used by checkGoalReminder -->
   </section>
 
   <script src="expenses.js"></script>
+  <script>
+    // Automatically display financial summary and goal reminders
+    displayExpenses?.(); // if expenses section is ever reused here
+    displayBalance();
+    checkGoalReminder();
+  </script>
 </body>
 </html>

@@ -1,5 +1,3 @@
-// Enhanced Expense Tracker JavaScript with Goal Editing/Deletion
-
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 let salary = parseFloat(localStorage.getItem("salary")) || 0;
 let bonusIncluded = localStorage.getItem("bonusIncluded") === "true";
@@ -64,7 +62,9 @@ function deleteExpense(index) {
 }
 
 function displayExpenses() {
+  expenses = JSON.parse(localStorage.getItem("expenses")) || [];
   const container = document.getElementById("expenseList");
+  if (!container) return;
   container.innerHTML = "";
   expenses.forEach((exp, i) => {
     const item = document.createElement("div");
@@ -82,13 +82,16 @@ function displayBalance() {
   const totalIncome = salary + bonusIncludedTotal;
   const balance = totalIncome - totalSpent;
 
-  document.getElementById("balance").innerText = `Balance: ₹${balance}`;
+  const balanceDiv = document.getElementById("balance");
+  if (balanceDiv) balanceDiv.innerText = `Balance: ₹${balance}`;
 
   const bonusNote = document.getElementById("bonusNote");
-  if (bonusExcludedTotal > 0) {
-    bonusNote.innerText = `Bonus not included: ₹${bonusExcludedTotal}`;
-  } else {
-    bonusNote.innerText = ``;
+  if (bonusNote) {
+    if (bonusExcludedTotal > 0) {
+      bonusNote.innerText = `Bonus not included: ₹${bonusExcludedTotal}`;
+    } else {
+      bonusNote.innerText = "";
+    }
   }
 
   checkGoalReminder(balance);
@@ -103,9 +106,10 @@ function saveGoal() {
   const endDate = new Date(startDate);
   endDate.setDate(endDate.getDate() + days);
 
-  if (!item || isNaN(target) || isNaN(days)) return alert("Please fill all goal fields");
-
-  const newGoal = { item, target, days, startDate: startDate.toISOString(), endDate: endDate.toISOString() };
+  if (!item || isNaN(target) || isNaN(days)) {
+    alert("Please fill all goal fields");
+    return;
+  }
 
   // Check for overlaps
   const overlaps = goals.filter(g => {
@@ -120,18 +124,24 @@ function saveGoal() {
     if (!proceed) return;
   }
 
-  goals.push(newGoal);
-  localStorage.setItem("goals", JSON.stringify(goals));
-  alert("Goal saved successfully!");
-  checkGoalReminder();
-}
+  goals.push({
+    item,
+    target,
+    days,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString()
+  });
 
-function deleteGoal(index) {
-  if (confirm("Are you sure you want to delete this goal?")) {
-    goals.splice(index, 1);
-    localStorage.setItem("goals", JSON.stringify(goals));
-    checkGoalReminder();
-  }
+  localStorage.setItem("goals", JSON.stringify(goals));
+  alert("Goal saved!");
+
+  document.getElementById("goalItem").value = "";
+  document.getElementById("goalAmount").value = "";
+  document.getElementById("goalDuration").value = "";
+  document.getElementById("goalStartDate").value = "";
+
+  checkGoalReminder();
+  if (typeof displayGoals === "function") displayGoals(); // ✅ update UI if present
 }
 
 function editGoal(index) {
@@ -144,20 +154,50 @@ function editGoal(index) {
     const newStart = new Date(goal.startDate);
     const newEnd = new Date(newStart);
     newEnd.setDate(newEnd.getDate() + newDays);
-    goals[index] = { item: newItem, target: newTarget, days: newDays, startDate: newStart.toISOString(), endDate: newEnd.toISOString() };
+
+    goals[index] = {
+      item: newItem,
+      target: newTarget,
+      days: newDays,
+      startDate: newStart.toISOString(),
+      endDate: newEnd.toISOString()
+    };
+
     localStorage.setItem("goals", JSON.stringify(goals));
     checkGoalReminder();
+    if (typeof displayGoals === "function") displayGoals(); // ✅ refresh goals if function exists
+  }
+}
+
+function deleteGoal(index) {
+  if (confirm("Are you sure you want to delete this goal?")) {
+    goals.splice(index, 1);
+    localStorage.setItem("goals", JSON.stringify(goals));
+    checkGoalReminder();
+    if (typeof displayGoals === "function") displayGoals(); // ✅ refresh UI if defined
+  }
+}
+
+function deleteAllGoals() {
+  if (confirm("Are you sure you want to delete all goals?")) {
+    localStorage.removeItem("goals");
+    goals = [];
+    checkGoalReminder();
+    if (typeof displayGoals === "function") displayGoals(); // ✅ optional UI update
   }
 }
 
 function checkGoalReminder(currentBalance = null) {
+  goals = JSON.parse(localStorage.getItem("goals")) || [];
   const infoDiv = document.getElementById("goalInfo");
   const now = new Date();
   const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
   const includedBonus = bonusIncludedTotal;
   const totalIncome = salary + includedBonus;
-  const balance = totalIncome - totalSpent;
+  const balance = currentBalance !== null ? currentBalance : (totalIncome - totalSpent);
   const balanceWithoutBonus = salary - totalSpent;
+
+  if (!infoDiv) return;
 
   infoDiv.innerHTML = "";
 
@@ -170,21 +210,30 @@ function checkGoalReminder(currentBalance = null) {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const timeRemaining = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
-
     const canAfford = balance >= target;
     if (canAfford) affordable.push(item);
 
     const block = document.createElement("div");
+
     block.innerHTML = `
       <p>🎯 Goal: ${item}</p>
       <p>📅 Target Date: ${end.toDateString()}</p>
       <p>🕒 Days Left: ${timeRemaining > 0 ? timeRemaining : 0}</p>
       <p>💰 Savings (with bonus): ₹${balance}</p>
       <p>💰 Savings (without bonus): ₹${balanceWithoutBonus}</p>
-      <button onclick="editGoal(${i})">Edit</button>
-      <button onclick="deleteGoal(${i})">Delete</button>
-      <hr>
     `;
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Edit";
+    editBtn.onclick = () => editGoal(i);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.onclick = () => deleteGoal(i);
+
+    block.appendChild(editBtn);
+    block.appendChild(deleteBtn);
+    block.appendChild(document.createElement("hr"));
     infoDiv.appendChild(block);
 
     if (timeRemaining <= 0 && canAfford) {
@@ -201,13 +250,13 @@ function checkGoalReminder(currentBalance = null) {
   });
 
   const summary = document.createElement("div");
-  if (affordable.length > 0) {
-    summary.innerHTML = `<strong>✅ You can afford: ${affordable.join(", ")}</strong>`;
-  } else {
-    summary.innerHTML = `<strong>⚠️ You cannot afford any goals yet.</strong>`;
-  }
+  summary.innerHTML = affordable.length > 0
+    ? `<strong>✅ You can afford: ${affordable.join(", ")}</strong>`
+    : `<strong>⚠️ You cannot afford any goals yet.</strong>`;
   infoDiv.appendChild(summary);
 }
 
+// Initial display on page load
 displayExpenses();
 displayBalance();
+checkGoalReminder();

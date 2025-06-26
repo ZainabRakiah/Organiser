@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Saving Goal</title>
+  <link rel="stylesheet" href="expenses.css" />
+</head>
+<body>
+  <h1>🌟 Add Saving Goal</h1>
+
+  <section>
+    <input type="text" id="goalItem" placeholder="Item (e.g., Phone)" />
+    <input type="number" id="goalAmount" placeholder="Target Amount (₹)" />
+    <input type="number" id="goalDuration" placeholder="Duration (days)" />
+    <label>Start Date: <input type="date" id="goalStartDate" /></label>
+    <button onclick="saveGoal()">Save Goal</button>
+  </section>
+
+  <hr />
+
+  <section>
+    <h2>Saved Goals</h2>
+    <div id="goalInfo"></div>
+    <button onclick="deleteAllGoals()">Delete All Goals</button>
+  </section>
+
+  <hr />
+  <button onclick="location.href='expenses.html'">⬅️ Back to Home</button>
+
+  <script src="expenses.js"></script>
+  <script>
+    // Custom goal view for goal.html
+    function displayGoals() {
+      const container = document.getElementById("goalInfo");
+      const goals = JSON.parse(localStorage.getItem("goals")) || [];
+      const salary = parseFloat(localStorage.getItem("salary")) || 0;
+      const bonusIncluded = parseFloat(localStorage.getItem("bonusIncludedTotal")) || 0;
+      const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+      const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+      const balance = salary + bonusIncluded - totalSpent;
+      const now = new Date();
+
+      container.innerHTML = "";
+
+      if (goals.length === 0) {
+        container.innerHTML = "<p>No goals added yet.</p>";
+        return;
+      }
+
+      goals.forEach((goal, i) => {
+        const start = new Date(goal.startDate);
+        const end = new Date(goal.endDate);
+        const timeLeft = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+        const isAffordable = balance >= goal.target;
+        const isPast = now > end;
+
+        let statusMessage = "";
+        if (isPast && !isAffordable) {
+          const delayDays = Math.abs(Math.ceil((now - end) / (1000 * 60 * 60 * 24)));
+          statusMessage = `<span style="color: red;">⚠️ Goal delayed by ${delayDays} day(s): not enough saved!</span>`;
+        } else if (timeLeft > 0) {
+          statusMessage = `⏳ <strong>${timeLeft}</strong> day(s) remaining`;
+        } else if (isAffordable) {
+          statusMessage = `🎉 You can now buy this!`;
+        }
+
+        const goalDiv = document.createElement("div");
+        goalDiv.innerHTML = `
+          <strong>🎯 ${goal.item}</strong><br/>
+          Target: ₹${goal.target} in ${goal.days} days<br/>
+          Start: ${start.toLocaleDateString()} | End: ${end.toLocaleDateString()}<br/>
+          ${statusMessage}<br/>
+          <button onclick="editGoal(${i})">Edit</button>
+          <button onclick="deleteGoal(${i})">Delete</button>
+        `;
+        container.appendChild(goalDiv);
+      });
+    }
+
+    // Load goal status + visual goals
+    checkGoalReminder();
+    displayGoals();
+  </script>
+</body>
+</html>

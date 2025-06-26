@@ -1,64 +1,142 @@
-const vaultList = document.getElementById("vaultList");
-const defaultMasterPassword = "abc123";
+let currentMonthOffset = 0;
+let periods = JSON.parse(localStorage.getItem("periods")) || [];
 
-// Load or set default master password
-if (!localStorage.getItem("masterPassword")) {
-  localStorage.setItem("masterPassword", defaultMasterPassword);
-}
+function saveCycle() {
+  const startDate = document.getElementById("startDate").value;
+  const endDate = document.getElementById("endDate").value;
+  const cycleLength = parseInt(document.getElementById("cycleLength").value);
 
-let storedPasswords = JSON.parse(localStorage.getItem("passwordVault")) || [];
-
-function unlockVault() {
-  const input = document.getElementById("masterPassInput").value;
-  const savedPassword = localStorage.getItem("masterPassword");
-
-  if (input === savedPassword) {
-    document.getElementById("lockScreen").style.display = "none";
-    document.getElementById("vault").style.display = "block";
-    displayPasswords();
-  } else {
-    alert("Incorrect Password!");
-  }
-}
-
-function addPassword() {
-  const site = document.getElementById("site").value;
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-
-  if (!site || !username || !password) {
+  if (!startDate || !endDate || isNaN(cycleLength)) {
     alert("Please fill all fields");
     return;
   }
 
-  const entry = { site, username, password };
-  storedPasswords.push(entry);
-  localStorage.setItem("passwordVault", JSON.stringify(storedPasswords));
-  displayPasswords();
+  const period = {
+    start: startDate,
+    end: endDate,
+    cycleLength: cycleLength
+  };
 
-  // Clear input fields
-  document.getElementById("site").value = "";
-  document.getElementById("username").value = "";
-  document.getElementById("password").value = "";
+  periods.push(period);
+  localStorage.setItem("periods", JSON.stringify(periods));
+  showNextCycle(period);
+  renderCalendar();
+  renderHistory();
 }
 
-function displayPasswords() {
-  vaultList.innerHTML = "";
-  storedPasswords.forEach((entry, index) => {
+function showNextCycle(period) {
+  const lastStart = new Date(period.start);
+  lastStart.setDate(lastStart.getDate() + period.cycleLength);
+  const nextStart = lastStart.toDateString();
+  document.getElementById("nextCycleInfo").innerText = `Next period expected around: ${nextStart}`;
+}
+
+function renderCalendar() {
+  const container = document.getElementById("calendarContainer");
+  container.innerHTML = "";
+
+  const now = new Date();
+  now.setMonth(now.getMonth() + currentMonthOffset);
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  const monthLabel = document.getElementById("monthLabel");
+  monthLabel.innerText = now.toLocaleString("default", { month: "long", year: "numeric" });
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDayIndex = new Date(year, month, 1).getDay();
+
+  const calendar = document.createElement("div");
+  calendar.className = "calendar";
+
+  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  weekDays.forEach(day => {
     const div = document.createElement("div");
-    div.className = "password-entry";
+    div.className = "header";
+    div.innerText = day;
+    calendar.appendChild(div);
+  });
+
+  for (let i = 0; i < firstDayIndex; i++) {
+    calendar.appendChild(document.createElement("div"));
+  }
+
+  for (let date = 1; date <= daysInMonth; date++) {
+    const cell = document.createElement("div");
+    const fullDate = new Date(year, month, date);
+
+    const isPeriodDay = periods.some(p => {
+      const start = new Date(p.start);
+      const end = new Date(p.end);
+      return fullDate >= start && fullDate <= end;
+    });
+
+    cell.innerText = date;
+    if (isPeriodDay) {
+      cell.classList.add("period-day");
+    }
+
+    calendar.appendChild(cell);
+  }
+
+  container.appendChild(calendar);
+}
+
+function changeMonth(offset) {
+  currentMonthOffset += offset;
+  renderCalendar();
+}
+
+function renderHistory() {
+  const container = document.getElementById("historyContainer");
+  container.innerHTML = "";
+
+  if (periods.length === 0) {
+    container.innerText = "No history available.";
+    return;
+  }
+
+  periods.forEach((p, index) => {
+    const div = document.createElement("div");
     div.innerHTML = `
-      <span><strong>${entry.site}</strong> | ${entry.username} | ${entry.password}</span>
-      <button onclick="deletePassword(${index})">❌</button>
+      🩸 <strong>From:</strong> ${p.start} <strong>To:</strong> ${p.end} | <strong>Cycle:</strong> ${p.cycleLength} days
+      <br>
+      <button onclick="editCycle(${index})">✏️ Edit</button>
+      <button onclick="deleteCycle(${index})">🗑️ Delete</button>
     `;
-    vaultList.appendChild(div);
+    container.appendChild(div);
   });
 }
 
-function deletePassword(index) {
-  if (confirm("Delete this entry?")) {
-    storedPasswords.splice(index, 1);
-    localStorage.setItem("passwordVault", JSON.stringify(storedPasswords));
-    displayPasswords();
+function editCycle(index) {
+  const p = periods[index];
+  const newStart = prompt("Enter new start date (yyyy-mm-dd):", p.start);
+  const newEnd = prompt("Enter new end date (yyyy-mm-dd):", p.end);
+  const newLength = parseInt(prompt("Enter new cycle length:", p.cycleLength));
+
+  if (!newStart || !newEnd || isNaN(newLength)) {
+    alert("Invalid input.");
+    return;
+  }
+
+  periods[index] = { start: newStart, end: newEnd, cycleLength: newLength };
+  localStorage.setItem("periods", JSON.stringify(periods));
+  renderCalendar();
+  renderHistory();
+  showNextCycle(periods[periods.length - 1]);
+}
+
+function deleteCycle(index) {
+  if (confirm("Are you sure you want to delete this cycle?")) {
+    periods.splice(index, 1);
+    localStorage.setItem("periods", JSON.stringify(periods));
+    renderCalendar();
+    renderHistory();
+    if (periods.length > 0) showNextCycle(periods[periods.length - 1]);
+    else document.getElementById("nextCycleInfo").innerText = "";
   }
 }
+
+// Run on load
+renderCalendar();
+renderHistory();

@@ -93,3 +93,16 @@ label {
   background-color: #ffe4e1;
   border-radius: 6px;
 }
+.history-section button {
+  margin: 5px 5px 0 5px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #d87093;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.history-section button:hover {
+  background-color: #c85070;
+}
